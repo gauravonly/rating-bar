@@ -1,0 +1,142 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="rating-bar">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width:100%;
+        height:100%;
+      }
+      #ratingbarWrapper{
+          width:100%;
+          height:100%;
+        }
+        .ratingbar-block{
+          display: inline-block;
+          width:30px;
+          height:40px;
+          border-radius: 5px;
+          background: #d8d8d8;
+          margin-right:3px;
+          cursor: pointer;
+          transition: background 0.2s ease-in;
+        }
+        .ratingbar1{
+          background: #f73c2a;
+          transition:background 0.2s ease-out;
+        }
+        .ratingbar2{
+          background: #f75119;
+        }
+        .ratingbar3{
+          background: #fa7815;
+        }
+        .ratingbar4{
+          background: #fca610;
+        }
+        .ratingbar5{
+          background: #f9c70d;
+        }
+        .ratingbar6{
+          background: #90cc10;
+        }
+        .ratingbar7{
+          background: #93cc19;
+        }
+        .ratingbar8{
+          background: #44db45;
+        }
+        .ratingbar9{
+          background: #1bd113;
+        }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+    <div id="ratingbarWrapper">
+
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `rating-bar`
+     * a polymer 2.0 element containing rating bars
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+
+    Polymer({
+
+      is: 'rating-bar',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'rating-bar'
+        },
+
+        rating: {
+          type: Number,
+          notify:true,
+          reflectToAttribute: true,
+          value: 0,
+        },
+      },
+
+      attached: function() {
+        for (var i = 1; i <= 9; i++) {
+          var newElement = document.createElement('span');
+          newElement.classList.add('ratingbar-block');
+          // newElement.classList.add('ratingbar' + i);
+          newElement.setAttribute('data-id', i);
+          // newElement.addEventListener('mouseover',this._onMouseOver);
+          // newElement.addEventListener('mouseout',this._onMouseOut);
+          newElement.addEventListener('click', this._onRatingBarTap);
+          this.$.ratingbarWrapper.appendChild(newElement);
+        }
+      },
+
+      _onMouseOver: function(e) {
+        // console.log('hover', e.target.getAttribute('data-id'));
+        var limit = e.target.getAttribute('data-id');
+        // console.log(e.target.parentNode.childNodes);
+        var siblingNodes = e.target.parentNode.childNodes;
+        // this._initializeRatingBar(siblingNodes);
+        for (var i = 1; i <= limit; i++) {
+          siblingNodes[i].classList.add('ratingbar' + i);
+        }
+
+      },
+
+      _onMouseOut: function(e) {
+        // console.log('hover', e.target.getAttribute('data-id'));
+        var limit = e.target.getAttribute('data-id');
+        // console.log(e.target.parentNode.childNodes);
+        var siblingNodes = e.target.parentNode.childNodes;
+        // this._initializeRatingBar(siblingNodes);
+        for (var i = 1; i <= limit; i++) {
+          siblingNodes[i].classList.remove('ratingbar' + i);
+        }
+
+      },
+
+      _onRatingBarTap: function(e) {
+        var limit = e.target.getAttribute('data-id');
+        var siblingNodes = e.target.parentNode.childNodes;
+        for (var i = 1; i <= 9; i++) {
+          siblingNodes[i].classList.remove('ratingbar' + i);
+        }
+        for (var i = 1; i <= limit; i++) {
+          siblingNodes[i].classList.add('ratingbar' + i);
+        }
+        var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+        this.rating = ratingcard[limit - 1];
+        this.dispatchEvent(new CustomEvent('overall-rating', {rating: this.rating}));
+        // console.log('this.rating', this.rating);
+      },
+
+    });
+  </script>
+</dom-module>
