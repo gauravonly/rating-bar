@@ -51,7 +51,6 @@
           background: #1bd113;
         }
     </style>
-    <h2>Hello [[prop1]]!</h2>
     <div id="ratingbarWrapper">
 
     </div>
@@ -60,7 +59,7 @@
   <script>
     /**
      * `rating-bar`
-     * a polymer 2.0 element containing rating bars
+     * a hybrid polymer element containing rating bars (polymer 1.0+ and polymer 2.0+ compatible)
      *
      * @customElement
      * @polymer
@@ -72,17 +71,13 @@
       is: 'rating-bar',
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'rating-bar'
-        },
 
         rating: {
           type: Number,
+          reflectToAttribute:true,
           notify:true,
-          reflectToAttribute: true,
-          value: 0,
         },
+
       },
 
       attached: function() {
@@ -93,17 +88,14 @@
           newElement.setAttribute('data-id', i);
           // newElement.addEventListener('mouseover',this._onMouseOver);
           // newElement.addEventListener('mouseout',this._onMouseOut);
-          newElement.addEventListener('click', this._onRatingBarTap);
+          newElement.addEventListener('click', this._onRatingBarTap.bind(this));
           this.$.ratingbarWrapper.appendChild(newElement);
         }
       },
 
       _onMouseOver: function(e) {
-        // console.log('hover', e.target.getAttribute('data-id'));
         var limit = e.target.getAttribute('data-id');
-        // console.log(e.target.parentNode.childNodes);
         var siblingNodes = e.target.parentNode.childNodes;
-        // this._initializeRatingBar(siblingNodes);
         for (var i = 1; i <= limit; i++) {
           siblingNodes[i].classList.add('ratingbar' + i);
         }
@@ -111,11 +103,8 @@
       },
 
       _onMouseOut: function(e) {
-        // console.log('hover', e.target.getAttribute('data-id'));
         var limit = e.target.getAttribute('data-id');
-        // console.log(e.target.parentNode.childNodes);
         var siblingNodes = e.target.parentNode.childNodes;
-        // this._initializeRatingBar(siblingNodes);
         for (var i = 1; i <= limit; i++) {
           siblingNodes[i].classList.remove('ratingbar' + i);
         }
@@ -128,13 +117,14 @@
         for (var i = 1; i <= 9; i++) {
           siblingNodes[i].classList.remove('ratingbar' + i);
         }
+
         for (var i = 1; i <= limit; i++) {
           siblingNodes[i].classList.add('ratingbar' + i);
         }
+
         var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
-        this.rating = ratingcard[limit - 1];
-        this.dispatchEvent(new CustomEvent('overall-rating', {rating: this.rating}));
-        // console.log('this.rating', this.rating);
+        this.set('rating', ratingcard[limit - 1]);
+        this.fire('rating-changed',this.rating);
       },
 
     });
