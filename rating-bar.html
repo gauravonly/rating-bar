@@ -28,27 +28,35 @@
         }
         .ratingbar2{
           background: #f75119;
+          transition:background 0.2s ease-out;
         }
         .ratingbar3{
           background: #fa7815;
+          transition:background 0.2s ease-out;
         }
         .ratingbar4{
           background: #fca610;
+          transition:background 0.2s ease-out;
         }
         .ratingbar5{
           background: #f9c70d;
+          transition:background 0.2s ease-out;
         }
         .ratingbar6{
           background: #90cc10;
+          transition:background 0.2s ease-out;
         }
         .ratingbar7{
           background: #93cc19;
+          transition:background 0.2s ease-out;
         }
         .ratingbar8{
           background: #44db45;
+          transition:background 0.2s ease-out;
         }
         .ratingbar9{
           background: #1bd113;
+          transition:background 0.2s ease-out;
         }
     </style>
     <div id="ratingbarWrapper">
@@ -97,6 +105,11 @@
         // newElement.addEventListener('mouseover',this._onMouseOver);
         // newElement.addEventListener('mouseout',this._onMouseOut);
         newElement.addEventListener('click', this._onRatingBarTap.bind(this));
+        newElement.addEventListener("transitionend", this._transitionEndFunction, false);
+        newElement.addEventListener("webkitTransitionEnd", this._transitionEndFunction, false);
+        newElement.addEventListener("mozTransitionEnd", this._transitionEndFunction, false);
+        newElement.addEventListener("msTransitionEnd", this._transitionEndFunction, false);
+        newElement.addEventListener("oTransitionEnd", this._transitionEndFunction, false);
         this.$.ratingbarWrapper.appendChild(newElement);
       }
       if(this.rating > 0){
@@ -135,15 +148,12 @@
 
       var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
       if(this.ratingType === 'individual'){
-        console.log('ratingType');
         this.set('indrating', ratingcard[limit - 1]);
         if(this.orderItem){
           this.orderItem.rating = ratingcard[limit - 1];
         }
-        this.fire('individual-rating-selected',this.orderItem);
       }
       else{
-        console.log('not RatingType');
         this.set('rating', ratingcard[limit - 1]);
       }
         this.fire('rating-changed',this.rating);
@@ -164,6 +174,12 @@
 
     _changedRatingType: function(e){
       // console.log('_changedRatingType',e);
+    },
+
+    _transitionEndFunction: function(){
+      if(this.ratingType === 'indiviual'){
+          this.fire('individual-rating-selected',this.orderItem);
+      }
     }
 
     });
