@@ -77,6 +77,10 @@
           reflectToAttribute:true,
           notify:true,
         },
+        ratingType:{
+          type:String,
+          notify:true
+        }
 
       },
 
@@ -90,6 +94,9 @@
           // newElement.addEventListener('mouseout',this._onMouseOut);
           newElement.addEventListener('click', this._onRatingBarTap.bind(this));
           this.$.ratingbarWrapper.appendChild(newElement);
+        }
+        if(this.ratingType === 'overall' && this.rating > 0){
+          this._fillPredefinedRating();
         }
       },
 
@@ -126,6 +133,19 @@
         this.set('rating', ratingcard[limit - 1]);
         this.fire('rating-changed',this.rating);
       },
+
+      _fillPredefinedRating: function(){
+        var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+        var limit = ratingcard.indexOf(this.rating) + 1;
+        var siblingNodes = this.$.ratingbarWrapper.childNodes;
+        for (var i = 1; i <= 9; i++) {
+          siblingNodes[i].classList.remove('ratingbar' + i);
+        }
+
+        for (var i = 1; i <= limit; i++) {
+          siblingNodes[i].classList.add('ratingbar' + i);
+        }
+      }
 
     });
   </script>
