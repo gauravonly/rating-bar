@@ -92,6 +92,10 @@
       },
       orderItem:{
         type:Object,
+      },
+      disabled:{
+        type:Boolean,
+        value:false
       }
 
     },
@@ -104,12 +108,14 @@
         newElement.setAttribute('data-id', i);
         // newElement.addEventListener('mouseover',this._onMouseOver);
         // newElement.addEventListener('mouseout',this._onMouseOut);
-        newElement.addEventListener('click', this._onRatingBarTap.bind(this));
-        newElement.addEventListener("transitionend", this._transitionEndFunction, false);
-        newElement.addEventListener("webkitTransitionEnd", this._transitionEndFunction, false);
-        newElement.addEventListener("mozTransitionEnd", this._transitionEndFunction, false);
-        newElement.addEventListener("msTransitionEnd", this._transitionEndFunction, false);
-        newElement.addEventListener("oTransitionEnd", this._transitionEndFunction, false);
+        if(!this.disabled){
+          newElement.addEventListener('click', this._onRatingBarTap.bind(this));
+          newElement.addEventListener("transitionend", this._transitionEndFunction, false);
+          newElement.addEventListener("webkitTransitionEnd", this._transitionEndFunction, false);
+          newElement.addEventListener("mozTransitionEnd", this._transitionEndFunction, false);
+          newElement.addEventListener("msTransitionEnd", this._transitionEndFunction, false);
+          newElement.addEventListener("oTransitionEnd", this._transitionEndFunction, false);
+        }
         this.$.ratingbarWrapper.appendChild(newElement);
       }
       if(this.rating > 0){
@@ -152,6 +158,7 @@
         if(this.orderItem){
           this.orderItem.rating = ratingcard[limit - 1];
         }
+        this.fire('individual-rating-selected',this.orderItem);
       }
       else{
         this.set('rating', ratingcard[limit - 1]);
@@ -177,9 +184,7 @@
     },
 
     _transitionEndFunction: function(){
-      if(this.ratingType === 'indiviual'){
-          this.fire('individual-rating-selected',this.orderItem);
-      }
+      // console.log('_transitionEndFunction');
     }
 
     });
