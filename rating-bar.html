@@ -72,80 +72,99 @@
 
       properties: {
 
-        rating: {
-          type: Number,
-          reflectToAttribute:true,
-          notify:true,
-        },
-        ratingType:{
-          type:String,
-          notify:true
-        }
-
+      rating: {
+        type: Number,
+        reflectToAttribute:true,
+        notify:true,
       },
-
-      attached: function() {
-        for (var i = 1; i <= 9; i++) {
-          var newElement = document.createElement('span');
-          newElement.classList.add('ratingbar-block');
-          // newElement.classList.add('ratingbar' + i);
-          newElement.setAttribute('data-id', i);
-          // newElement.addEventListener('mouseover',this._onMouseOver);
-          // newElement.addEventListener('mouseout',this._onMouseOut);
-          newElement.addEventListener('click', this._onRatingBarTap.bind(this));
-          this.$.ratingbarWrapper.appendChild(newElement);
-        }
-        if(this.ratingType === 'overall' && this.rating > 0){
-          this._fillPredefinedRating();
-        }
+      ratingType:{
+        type:String,
+        notify:true,
+        observer: '_changedRatingType'
       },
-
-      _onMouseOver: function(e) {
-        var limit = e.target.getAttribute('data-id');
-        var siblingNodes = e.target.parentNode.childNodes;
-        for (var i = 1; i <= limit; i++) {
-          siblingNodes[i].classList.add('ratingbar' + i);
-        }
-
-      },
-
-      _onMouseOut: function(e) {
-        var limit = e.target.getAttribute('data-id');
-        var siblingNodes = e.target.parentNode.childNodes;
-        for (var i = 1; i <= limit; i++) {
-          siblingNodes[i].classList.remove('ratingbar' + i);
-        }
-
-      },
-
-      _onRatingBarTap: function(e) {
-        var limit = e.target.getAttribute('data-id');
-        var siblingNodes = e.target.parentNode.childNodes;
-        for (var i = 1; i <= 9; i++) {
-          siblingNodes[i].classList.remove('ratingbar' + i);
-        }
-
-        for (var i = 1; i <= limit; i++) {
-          siblingNodes[i].classList.add('ratingbar' + i);
-        }
-
-        var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
-        this.set('rating', ratingcard[limit - 1]);
-        this.fire('rating-changed',this.rating);
-      },
-
-      _fillPredefinedRating: function(){
-        var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
-        var limit = ratingcard.indexOf(this.rating) + 1;
-        var siblingNodes = this.$.ratingbarWrapper.childNodes;
-        for (var i = 1; i <= 9; i++) {
-          siblingNodes[i].classList.remove('ratingbar' + i);
-        }
-
-        for (var i = 1; i <= limit; i++) {
-          siblingNodes[i].classList.add('ratingbar' + i);
-        }
+      orderItem:{
+        type:Object,
       }
+
+    },
+
+    attached: function() {
+      for (var i = 1; i <= 9; i++) {
+        var newElement = document.createElement('span');
+        newElement.classList.add('ratingbar-block');
+        // newElement.classList.add('ratingbar' + i);
+        newElement.setAttribute('data-id', i);
+        // newElement.addEventListener('mouseover',this._onMouseOver);
+        // newElement.addEventListener('mouseout',this._onMouseOut);
+        newElement.addEventListener('click', this._onRatingBarTap.bind(this));
+        this.$.ratingbarWrapper.appendChild(newElement);
+      }
+      if(this.rating > 0){
+        this._fillPredefinedRating();
+      }
+    },
+
+    _onMouseOver: function(e) {
+      var limit = e.target.getAttribute('data-id');
+      var siblingNodes = e.target.parentNode.childNodes;
+      for (var i = 1; i <= limit; i++) {
+        siblingNodes[i].classList.add('ratingbar' + i);
+      }
+
+    },
+
+    _onMouseOut: function(e) {
+      var limit = e.target.getAttribute('data-id');
+      var siblingNodes = e.target.parentNode.childNodes;
+      for (var i = 1; i <= limit; i++) {
+        siblingNodes[i].classList.remove('ratingbar' + i);
+      }
+
+    },
+
+    _onRatingBarTap: function(e) {
+      var limit = e.target.getAttribute('data-id');
+      var siblingNodes = e.target.parentNode.childNodes;
+      for (var i = 1; i <= 9; i++) {
+        siblingNodes[i].classList.remove('ratingbar' + i);
+      }
+
+      for (var i = 1; i <= limit; i++) {
+        siblingNodes[i].classList.add('ratingbar' + i);
+      }
+
+      var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+      if(this.ratingType === 'individual'){
+        console.log('ratingType');
+        this.set('indrating', ratingcard[limit - 1]);
+        if(this.orderItem){
+          this.orderItem.rating = ratingcard[limit - 1];
+        }
+        this.fire('individual-rating-selected',this.orderItem);
+      }
+      else{
+        console.log('not RatingType');
+        this.set('rating', ratingcard[limit - 1]);
+      }
+        this.fire('rating-changed',this.rating);
+    },
+
+    _fillPredefinedRating: function(){
+      var ratingcard = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+      var limit = ratingcard.indexOf(this.rating) + 1;
+      var siblingNodes = this.$.ratingbarWrapper.childNodes;
+      for (var i = 1; i <= 9; i++) {
+        siblingNodes[i].classList.remove('ratingbar' + i);
+      }
+
+      for (var i = 1; i <= limit; i++) {
+        siblingNodes[i].classList.add('ratingbar' + i);
+      }
+    },
+
+    _changedRatingType: function(e){
+      // console.log('_changedRatingType',e);
+    }
 
     });
   </script>
